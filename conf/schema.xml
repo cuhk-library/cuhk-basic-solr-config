@@ -289,7 +289,21 @@
          them will be ignored outright
      -->
     <fieldtype name="ignored" stored="false" indexed="false" class="solr.StrField" />
-
+    <!-- IK Analyzer -->
+    <fieldType name="text_ik" class="solr.TextField">     
+	<!--<analyzer class="org.wltea.analyzer.lucene.IKAnalyzer"  useSmart="true" />-->
+        <analyzer>    
+            <tokenizer class="org.wltea.analyzer.lucene.IKTokenizerFactory"  isMaxWordLength="false" useSmart="true"/>    
+            <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="([\p{InHangul_Jamo}\p{InHangul_Compatibility_Jamo}\p{InHangul_Syllables}][\p{InBopomofo}\p{InBopomofo_Extended}\p{InCJK_Compatibility}\p{InCJK_Compatibility_Forms}\p{InCJK_Compatibility_Ideographs}\p{InCJK_Compatibility_Ideographs_Supplement}\p{InCJK_Radicals_Supplement}\p{InCJK_Symbols_And_Punctuation}\p{InCJK_Unified_Ideographs}\p{InCJK_Unified_Ideographs_Extension_A}\p{InCJK_Unified_Ideographs_Extension_B}\p{InKangxi_Radicals}\p{InHalfwidth_And_Fullwidth_Forms}\p{InIdeographic_Description_Characters}]*)\s+(?=[\p{InHangul_Jamo}\p{InHangul_Compatibility_Jamo}\p{InHangul_Syllables}\p{InBopomofo}\p{InBopomofo_Extended}\p{InCJK_Compatibility}\p{InCJK_Compatibility_Forms}\p{InCJK_Compatibility_Ideographs}\p{InCJK_Compatibility_Ideographs_Supplement}\p{InCJK_Radicals_Supplement}\p{InCJK_Symbols_And_Punctuation}\p{InCJK_Unified_Ideographs}\p{InCJK_Unified_Ideographs_Extension_A}\p{InCJK_Unified_Ideographs_Extension_B}\p{InKangxi_Radicals}\p{InHalfwidth_And_Fullwidth_Forms}\p{InIdeographic_Description_Characters}])" replacement="$1"/>
+            <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="([\p{InHangul_Jamo}\p{InHangul_Compatibility_Jamo}\p{InHangul_Syllables}\p{InBopomofo}\p{InBopomofo_Extended}\p{InCJK_Compatibility}\p{InCJK_Compatibility_Forms}\p{InCJK_Compatibility_Ideographs}\p{InCJK_Compatibility_Ideographs_Supplement}\p{InCJK_Radicals_Supplement}\p{InCJK_Symbols_And_Punctuation}\p{InCJK_Unified_Ideographs}\p{InCJK_Unified_Ideographs_Extension_A}\p{InCJK_Unified_Ideographs_Extension_B}\p{InKangxi_Radicals}\p{InHalfwidth_And_Fullwidth_Forms}\p{InIdeographic_Description_Characters}])\s+(?=[\p{InBopomofo}\p{InBopomofo_Extended}\p{InCJK_Compatibility}\p{InCJK_Compatibility_Forms}\p{InCJK_Compatibility_Ideographs}\p{InCJK_Compatibility_Ideographs_Supplement}\p{InCJK_Radicals_Supplement}\p{InCJK_Symbols_And_Punctuation}\p{InCJK_Unified_Ideographs}\p{InCJK_Unified_Ideographs_Extension_A}\p{InCJK_Unified_Ideographs_Extension_B}\p{InKangxi_Radicals}\p{InHalfwidth_And_Fullwidth_Forms}\p{InIdeographic_Description_Characters}\s]*[\p{InHangul_Jamo}\p{InHangul_Compatibility_Jamo}\p{InHangul_Syllables}])" replacement="$1"/>
+            <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-tsvcc.txt"/>
+            <filter class="solr.CJKWidthFilterFactory"/>
+            <filter class="solr.ICUTransformFilterFactory" id="Traditional-Simplified"/>
+            <filter class="solr.ICUTransformFilterFactory" id="Katakana-Hiragana"/>
+            <filter class="solr.ICUFoldingFilterFactory"/> 
+            <filter class="solr.CJKBigramFilterFactory" han="true" hiragana="true" katakana="true" hangul="true" outputUnigrams="true" />
+        </analyzer>
+    </fieldType> 
  </types>
 
 
@@ -365,6 +379,9 @@
    <dynamicField name="*_mlt" type="mappedLowerText" indexed="true" stored="true" multiValued='false'/>
    <dynamicField name="*_cjkt"  type="text_cjk"    indexed="true"  stored="true"/>
    <dynamicField name="*_cjkmt"  type="text_cjk"    indexed="true"  stored="true" multiValued="true"/>
+   <!-- Field for IK Analyzer -->   
+   <dynamicField name="*_ik" type="text_ik" indexed="true" stored="true" multiValued="false" />
+   <dynamicField name="*_ikmt"  type="text_ik"    indexed="true"  stored="true" multiValued="true"/>
    <!-- uncomment the following to ignore any fields that don't already match an existing
         field name or dynamic field, rather than reporting them as an error.
         alternately, change the type="ignored" to some other type e.g. "text" if you want
@@ -375,7 +392,6 @@
    <!-- begin: islandora_solution_pack_oralhistories setup -->
    <dynamicField name="or_*" type="text" indexed="true" stored="true" multiValued="true"/>
    <!-- end: islandora_solution_pack_oralhistories setup -->
-
  </fields>
 
  <!-- Field to use to determine and enforce document uniqueness.
@@ -411,6 +427,13 @@
 <copyField source="*_ms" dest="*_cjkmt"/>
 <copyField source="*_dt" dest="*_cjkmt"/>
 <copyField source="*_mdt" dest="*_cjkmt"/>
+<copyField source="*_s" dest="*_ik"/>
+<copyField source="*_t" dest="*_ik"/>
+<copyField source="*_s" dest="*_ikmt"/>
+<copyField source="*_mt" dest="*_ikmt"/>
+<copyField source="*_ms" dest="*_ikmt"/>
+<copyField source="*_dt" dest="*_ikmt"/>
+<copyField source="*_mdt" dest="*_ikmt"/>
 
 <!-- The following line is a bit of a performance hog, I would look to remove it if the indexing takes a long time. -->
 <copyField source="*" dest="catch_all_fields_mt"/>
