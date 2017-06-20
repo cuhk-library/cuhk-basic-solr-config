@@ -600,7 +600,7 @@
         <xsl:value-of select="concat(@type, '_')"/>
       </xsl:if>
     </xsl:variable>
-    <xsl:for-each select="mods:role/mods:roleTerm">
+    <!--<xsl:for-each select="mods:role/mods:roleTerm">
       <xsl:variable name="this_prefix" select="concat($base_prefix, translate(normalize-space(.), $uppercase, $lowercase), '_')"/>
 
       <xsl:call-template name="mods_language_fork">
@@ -611,7 +611,7 @@
         <xsl:with-param name="datastream" select="$datastream"/>
         <xsl:with-param name="node" select="../.."/>
       </xsl:call-template>
-    </xsl:for-each>
+    </xsl:for-each>-->
 
     <xsl:call-template name="mods_language_fork">
       <xsl:with-param name="prefix" select="$base_prefix"/>
@@ -621,7 +621,6 @@
       <xsl:with-param name="datastream" select="$datastream"/>
     </xsl:call-template>
   </xsl:template>
-
   <!-- Custom mapping for titleInfo/partNumber so we can sort numerically. Of
        possible importance to note is that the partNumber field should only
        contain one contiguous integer; if the field contains something such as
