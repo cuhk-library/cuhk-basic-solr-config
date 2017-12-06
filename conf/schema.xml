@@ -334,6 +334,9 @@
    <!-- catch role info to solr  --> 
    <field name="mods_name_corporate_role_merge_ms" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="mods_name_personal_role_merge_ms" type="string" indexed="true" stored="true" multiValued="true"/>
+   <!-- catch MMSID and Barcode field to solr  --> 
+   <field name="mods_identifier_display_label_mmsid_ms" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="mods_identifier_display_label_barcode_ms" type="string" indexed="true" stored="true" multiValued="true"/>
    <!-- Here, default is used to create a "timestamp" field indicating
         When each document was indexed.
      -->

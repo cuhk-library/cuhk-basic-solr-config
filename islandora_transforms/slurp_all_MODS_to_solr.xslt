@@ -41,7 +41,7 @@
     <xsl:apply-templates mode="cuhk_slurping_originInfo_dateCreated_MODS" select="$content//mods:mods[1]/mods:originInfo[1]"></xsl:apply-templates>   
     <xsl:apply-templates mode="cuhk_slurping_relatedItem_MODS" select="$content//mods:mods[1]/mods:relatedItem[@type='host']/mods:titleInfo"></xsl:apply-templates>
     <xsl:apply-templates mode="cuhk_slurping_name_MODS" select="$content//mods:mods[1]/mods:name[@type='personal'] | $content//mods:mods[1]/mods:name[@type='corporate']"></xsl:apply-templates>
-    
+    <xsl:apply-templates mode="cuhk_slurping_identifier_MODS" select="$content//mods:mods[1]/mods:identifier[@displayLabel='MMSID'] | $content//mods:mods[1]/mods:identifier[@displayLabel='Barcode']"></xsl:apply-templates>
   </xsl:template>
   <!-- Merge all subject sub tab into one field. -->
     <xsl:template match="*" mode="cuhk_slurping_subject_MODS">
@@ -254,6 +254,44 @@
             </xsl:if>
         </xsl:if>
    </xsl:template>
+   <!-- Two custom fields for specific storing MMSID and Barcode 
+    - identifier[displayLabel=MMSID]
+    - identifier[displayLabel=Barcode]
+  -->
+  <xsl:template match="*" mode="cuhk_slurping_identifier_MODS">
+      <xsl:variable name="displayLabel" select="normalize-space(@displayLabel)"/>
+      <xsl:if test="normalize-space(.) != ''">
+        <xsl:if test="normalize-space($displayLabel) = 'Barcode'">
+          <field name="mods_identifier_display_label_barcode_ms">
+                <xsl:value-of select="normalize-space(.)"/>
+          </field>
+        </xsl:if>
+        <xsl:if test="normalize-space($displayLabel) = 'MMSID'">
+          <field name="mods_identifier_display_label_mmsid_ms">
+                <xsl:value-of select="normalize-space(.)"/>
+          </field>
+        </xsl:if>
+      </xsl:if>
+       <!--<xsl:if test="self::identifier[@displayLabel='MMSID']">
+            <field name="mods_identifier_display_label_mmsid_ms">
+                <xsl:text>mmsid</xsl:text>
+            </field>
+       </xsl:if>-->
+      <!--<xsl:for-each select="mods:identifier[@displayLabel='MMSID']">
+        <xsl:if test="normalize-space(.) != ''">
+            <field name="mods_identifier_display_label_mmsid_s">
+                <xsl:value-of select="normalize-space(.)"/>
+            </field>
+        </xsl:if>
+      </xsl:for-each>
+      
+        <xsl:if test="normalize-space(.) != ''">
+            <field name="mods_identifier_display_label_barcode_s">
+                <xsl:value-of select="normalize-space(.)"/>
+            </field>
+        </xsl:if>-->
+   </xsl:template>
+  
    <!-- Custom mapping for merging 
     - name[personal][namePart] and name[role][roleTerm]
     - name[corporate][namePart] and name[role][roleTerm]
