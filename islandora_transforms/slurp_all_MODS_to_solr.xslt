@@ -69,14 +69,34 @@
     <!-- Merge all titleInfo fields into one field. -->
     <xsl:template match="*" mode="cuhk_slurping_titleInfo_MODS">
         <xsl:variable name="titleItem">
-            <xsl:for-each select="*[local-name()='nonSort' or local-name()='title' or local-name()='subTitle']">
+            <xsl:for-each select="*[local-name()='nonSort']">
                 <xsl:if test="normalize-space(.) != ''">
-                    <xsl:if test="position() > 1 and local-name() != 'subTitle'">
-                        <xsl:if test="not(normalize-space(.)='')"><xsl:value-of select="' '"/></xsl:if>
-                    </xsl:if>
-                    <xsl:if test="local-name() = 'subTitle'">
-                        <xsl:if test="not(normalize-space(.)='')"> : </xsl:if>
-                    </xsl:if>
+                    <xsl:value-of select="normalize-space(.)"/>
+                </xsl:if>
+            </xsl:for-each>
+            <xsl:for-each select="*[local-name()='title']">
+                <xsl:if test="normalize-space(.) != ''">
+                    <xsl:value-of select="' '"/>
+                    <xsl:value-of select="normalize-space(.)"/>
+                </xsl:if>
+            </xsl:for-each>
+            
+            <xsl:for-each select="*[local-name()='partName']">
+                <xsl:if test="normalize-space(.) != ''">
+                    <xsl:value-of select="' '"/>
+                    <xsl:value-of select="normalize-space(.)"/>
+                </xsl:if>
+            </xsl:for-each>
+            <xsl:for-each select="*[local-name()='subTitle']">
+                <xsl:if test="normalize-space(.) != ''">
+                    <xsl:if test="not(normalize-space(.)='')"> : </xsl:if>
+                    <xsl:value-of select="normalize-space(.)"/>
+                </xsl:if>
+            </xsl:for-each>
+        </xsl:variable>
+        <xsl:variable name="partNumberItem">
+            <xsl:for-each select="*[local-name()='partNumber']">
+                <xsl:if test="normalize-space(translate(., '0123456789', '')) != ''">
                     <xsl:value-of select="normalize-space(.)"/>
                 </xsl:if>
             </xsl:for-each>
@@ -84,6 +104,10 @@
         <xsl:if test="normalize-space($titleItem) != ''">
             <field name="mods_titleInfo_merge_ms">
                 <xsl:value-of select="$titleItem"/>
+                <xsl:if test="normalize-space($partNumberItem) != ''">
+                    <xsl:value-of select="' '"/>
+                    <xsl:value-of select="$partNumberItem"/>
+                </xsl:if>
             </field>
         </xsl:if>
    </xsl:template>
@@ -913,7 +937,7 @@
        contain one contiguous integer; if the field contains something such as
        "Vol. 1, iss. 12", this will interpret that field as "112", which is not
        likely desirable. -->
-  <xsl:template match="mods:titleInfo/mods:partNumber" mode="slurping_MODS">
+   <xsl:template match="mods:titleInfo[1]/mods:partNumber" mode="slurping_MODS">
     <xsl:param name="prefix"/>
     <xsl:param name="suffix"/>
     <xsl:param name="value"/>
@@ -924,12 +948,17 @@
     <xsl:if test="not(normalize-space($node/../mods:partNumber[not(@*)][1]) ='') and not(normalize-space(.)='') and java:add($single_valued_hashset, $field_name)">
       <xsl:variable name="value" select="normalize-space($node/../mods:partNumber[not(@*)][1])"/>
       <xsl:variable name="number_value" select="translate($value, translate($value, '0123456789', ''), '')"/>
-      <field>
-        <xsl:attribute name="name">
-          <xsl:value-of select="$field_name"/>
-        </xsl:attribute>
-        <xsl:value-of select="$number_value"/>
-      </field>
+      <xsl:variable name="non_number_value" select="translate($value, '0123456789', '')"/>
+      <xsl:if test="not(normalize-space($number_value) = '')">
+          <xsl:if test="normalize-space($non_number_value) = ''">
+            <field>
+              <xsl:attribute name="name">
+                <xsl:value-of select="$field_name"/>
+              </xsl:attribute>
+              <xsl:value-of select="$number_value"/>
+            </field>
+          </xsl:if>
+      </xsl:if>
     </xsl:if>
   </xsl:template>
 

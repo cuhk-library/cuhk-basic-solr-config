@@ -17,7 +17,7 @@
         <xsl:variable name="return_from_clear" select="java:clear($single_valued_hashset_for_rels_ext)"/>
         <!-- Load Collection name into new field and index in solr -->
         <xsl:for-each select="$content//rdf:Description/*[@rdf:resource]">
-            <xsl:if test="local-name()='isMemberOfCollection'">
+            <xsl:if test="local-name()='isMemberOfCollection' or local-name()='isCollectionOf'">
                 <xsl:variable name="collectionPID" select="substring-after(@rdf:resource,'info:fedora/')"/>
                 <xsl:variable name="collectionContent" select="document(concat('http://',$FEDORAUSER,':',$FEDORAPASS,'@',$HOST,':8080/fedora/objects/', $collectionPID, '/datastreams/', 'DC', '/content'))"/>
                
@@ -35,6 +35,12 @@
                         <xsl:value-of select="normalize-space($collectionName)"/>
                     </field>
                 </xsl:for-each>
+            </xsl:if>
+            <xsl:if test="local-name()='isJournalMemberOf'">
+                <xsl:variable name="journalPID" select="substring-after(@rdf:resource,'info:fedora/')"/>
+                <field name="journal_membership_pid_ms">
+                    <xsl:value-of select="normalize-space($journalPID)"/>
+                </field>
             </xsl:if>
         </xsl:for-each>
         <xsl:apply-templates select="$content//rdf:Description/* | $content//rdf:description/*" mode="rels_ext_element">
