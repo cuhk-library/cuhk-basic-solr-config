@@ -138,7 +138,7 @@
                 </xsl:for-each>-->
             </xsl:variable>
             <xsl:variable name="dateIssued">
-                <xsl:for-each select="mods:dateIssued[count(@*)=0]">
+                <xsl:for-each select="mods:dateIssued">
                     <xsl:if test="position() > 1">
                         <xsl:if test="not(normalize-space(.)='')"><xsl:value-of select="' '"/></xsl:if>
                     </xsl:if>
@@ -146,7 +146,7 @@
                 </xsl:for-each>
             </xsl:variable>
             <xsl:variable name="dateCreated">
-                <xsl:for-each select="mods:dateCreated[count(@*)=0]">
+                <xsl:for-each select="mods:dateCreated">
                     <xsl:if test="position() > 1">
                         <xsl:if test="not(normalize-space(.)='')"><xsl:value-of select="' '"/></xsl:if>
                     </xsl:if>
@@ -181,14 +181,14 @@
                 </field>
             </xsl:if>
         </xsl:if>
-        <xsl:if test="mods:dateIssued[count(@*)=0] or mods:dateCreated[count(@*)=0]">
+        <xsl:if test="mods:dateIssued or mods:dateCreated">
             <xsl:variable name="dateIssuedSingleField">
-                <xsl:for-each select="mods:dateIssued[count(@*)=0]">
+                <xsl:for-each select="mods:dateIssued">
                     <xsl:value-of select="normalize-space(.)"/>
                 </xsl:for-each>
             </xsl:variable>
             <xsl:variable name="dateCreatedSingleField">
-                <xsl:for-each select="mods:dateCreated[count(@*)=0]">
+                <xsl:for-each select="mods:dateCreated">
                     <xsl:value-of select="normalize-space(.)"/>
                 </xsl:for-each>
             </xsl:variable>
@@ -221,7 +221,7 @@
     --> 
    <xsl:template match="*" mode="cuhk_slurping_originInfo_dateCreated_MODS">
         <xsl:variable name="dateIssued">
-            <xsl:for-each select="mods:dateIssued[count(@*)=0]">
+            <xsl:for-each select="mods:dateIssued">
                 <xsl:if test="position() > 1">
                     <xsl:if test="not(normalize-space(.)='')"><xsl:value-of select="' '"/></xsl:if>
                 </xsl:if>
@@ -229,7 +229,7 @@
             </xsl:for-each>
         </xsl:variable>
         <xsl:variable name="dateCreated">
-            <xsl:for-each select="mods:dateCreated[count(@*)=0]">
+            <xsl:for-each select="mods:dateCreated">
                 <xsl:if test="position() > 1">
                     <xsl:if test="not(normalize-space(.)='')"><xsl:value-of select="' '"/></xsl:if>
                 </xsl:if>
@@ -838,13 +838,13 @@
         <xsl:variable name="tempValue">
             <xsl:for-each select=".">
                 <xsl:if test="not(normalize-space(.)='')">
-                    <xsl:value-of select="substring-after(normalize-space(.),'(')"/>
+                    <xsl:value-of select="substring-after(normalize-space(.),'Thesis ')"/>
                </xsl:if>
             </xsl:for-each>
         </xsl:variable>
         <xsl:variable name="tempValue1">
             <xsl:if test="not(normalize-space($tempValue)='')">
-                <xsl:value-of select="substring-before(normalize-space($tempValue),')')"/>
+                <xsl:value-of select="substring-before(normalize-space($tempValue),'Chinese University of ')"/>
             </xsl:if>
         </xsl:variable>
         <xsl:variable name="tempDegree">
