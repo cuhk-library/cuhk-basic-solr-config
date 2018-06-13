@@ -195,13 +195,13 @@
             <xsl:choose>
                 <xsl:when test="normalize-space($dateIssuedSingleField) != '' ">
                     <field name="mods_created_date_year_ms">
-                        <xsl:value-of select="translate($dateIssuedSingleField,$vAllowedSymbols,'')"/>
+                        <xsl:value-of select="substring(translate($dateIssuedSingleField,translate($dateIssuedSingleField, '0123456789', ''),''),string-length(translate($dateIssuedSingleField,translate($dateIssuedSingleField, '0123456789', ''),''))-3, 4)"/>
                     </field>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:if test="normalize-space($dateCreatedSingleField) != '' ">
                         <field name="mods_created_date_year_ms">
-                            <xsl:value-of select="translate($dateCreatedSingleField,$vAllowedSymbols,'')"/>
+                            <xsl:value-of select="substring(translate($dateCreatedSingleField,translate($dateCreatedSingleField, '0123456789', ''),''),string-length(translate($dateCreatedSingleField,translate($dateCreatedSingleField, '0123456789', ''),''))-3, 4)"/>
                         </field>
                     </xsl:if>
                 </xsl:otherwise>
@@ -239,13 +239,13 @@
         <xsl:choose>
             <xsl:when test="normalize-space($dateIssued) != '' ">
                 <field name="mods_created_date_year_ss">
-                    <xsl:value-of select="translate($dateIssued,$vAllowedSymbols,'')"/>
+                    <xsl:value-of select="substring(translate($dateIssued,translate($dateIssued, '0123456789', ''),''),string-length(translate($dateIssued,translate($dateIssued, '0123456789', ''),''))-3, 4)"/>
                 </field>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:if test="normalize-space($dateCreated) != '' ">
                     <field name="mods_created_date_year_ss">
-                        <xsl:value-of select="translate($dateCreated,$vAllowedSymbols,'')"/>
+                        <xsl:value-of select="substring(translate($dateCreated,translate($dateCreated, '0123456789', ''),''),string-length(translate($dateCreated,translate($dateCreated, '0123456789', ''),''))-3, 4)"/>
                     </field>
                 </xsl:if>
             </xsl:otherwise>
@@ -827,7 +827,7 @@
     * 1.Get value from note field where type equal to thesis
     * 2.Get the degree in string
     -->
-    <xsl:template match="mods:note[@type='thesis']" mode="cuhk_slurping_MODS">
+    <xsl:template match="mods:note[@type='thesis_degree']" mode="cuhk_slurping_MODS">
        <xsl:param name="prefix"/>
         <xsl:param name="suffix"/>
         <xsl:param name="value"/>
@@ -838,19 +838,19 @@
         <xsl:variable name="tempValue">
             <xsl:for-each select=".">
                 <xsl:if test="not(normalize-space(.)='')">
-                    <xsl:value-of select="substring-after(normalize-space(.),'Thesis ')"/>
+                    <xsl:value-of select="."/>
                </xsl:if>
             </xsl:for-each>
         </xsl:variable>
-        <xsl:variable name="tempValue1">
+        <!--<xsl:variable name="tempValue1">
             <xsl:if test="not(normalize-space($tempValue)='')">
                 <xsl:value-of select="substring-before(normalize-space($tempValue),'Chinese University of ')"/>
             </xsl:if>
-        </xsl:variable>
+        </xsl:variable>-->
         <xsl:variable name="tempDegree">
             
-            <xsl:if test="not(normalize-space($tempValue1)='')">
-                <xsl:value-of select="normalize-space($tempValue1)"/>
+            <xsl:if test="not(normalize-space($tempValue)='')">
+                <xsl:value-of select="normalize-space($tempValue)"/>
            </xsl:if>
             
         </xsl:variable>
