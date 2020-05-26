@@ -13,7 +13,6 @@
   <!-- HashSet to track single-valued fields. -->
   <xsl:variable name="single_valued_hashset" select="java:java.util.HashSet.new()"/>
     <xsl:variable name="vAllowedSymbols" select="'&#x5b;&#x5d;&#x3c;&#x3e;&#x28;&#x29;&#x2f;&#x2c;&#x2d;'"/>
-    <xsl:variable name="vDateSeparator" select="'&#x2d;'"/>
   <xsl:template match="foxml:datastream[@ID='MODS']/foxml:datastreamVersion[last()]" name="index_MODS">
     <xsl:param name="content"/>
     <xsl:param name="prefix"></xsl:param>
