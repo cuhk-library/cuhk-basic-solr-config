@@ -470,7 +470,18 @@
 
     <!-- Prevent multiple generating multiple instances of single-valued fields
          by tracking things in a HashSet -->
-    <xsl:variable name="field_name" select="normalize-space(concat($this_prefix, local-name()))"/>
+    <!-- Handling the issue about the created_date with encoding=marc cannot be displayed-->
+    <xsl:variable name="field_name">
+    <xsl:choose>
+        <xsl:when test="normalize-space(concat($prefix,local-name()))='mods_originInfo_dateCreated'">
+            <xsl:value-of select="normalize-space(concat($prefix, local-name()))"/>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of select="normalize-space(concat($this_prefix, local-name()))"/>
+        </xsl:otherwise>
+    </xsl:choose>
+    </xsl:variable>
+
     <!-- The method java.util.HashSet.add will return false when the value is
          already in the set. -->
     <xsl:if test="java:add($single_valued_hashset, $field_name)">
